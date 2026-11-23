@@ -12,3 +12,7 @@ npm run preview
 - Animations: [`motion/react`](https://motion.dev)
 - Preline (full bundle, all plugins): call `usePreline()` in components that render Preline markup.
 - iOS/Android shell defaults (safe areas, `dvh`, overscroll, tap highlight) are in `src/index.css`; use the `safe-area` utility on full-screen containers.
+
+## Deploy
+
+Pushes to `main` build and deploy to GitHub Pages via `.github/workflows/deploy.yml` (repo Settings → Pages → Source: GitHub Actions). Live at https://alexelash.github.io/miscreants/. The Vite `base` is `/miscreants/`; if you add a router, use hash routing since Pages has no SPA fallback.
