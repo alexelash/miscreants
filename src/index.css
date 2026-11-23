@@ -16,6 +16,12 @@
     height: 100%;
   }
 
+  /* Single phone screen: nothing scrolls */
+  html,
+  body {
+    overflow: hidden;
+  }
+
   body {
     min-height: 100dvh;
     background-color: var(--color-background);
