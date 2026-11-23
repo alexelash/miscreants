@@ -37,7 +37,7 @@ type RoomContextValue = {
   code: string | null
   players: Player[]
   me: Player | null
-  createRoom: () => Promise<string>
+  createRoom: () => string
   joinRoom: (code: string) => Promise<boolean>
   rejoinRoom: (code: string) => Promise<boolean>
   pickPiece: (piece: PieceId) => void
@@ -121,11 +121,13 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
   const enterRoom = useCallback(
     async (room: string, me: Player) => {
-      const client = await whenConnected()
+      // Show the room right away; the broker catches up once connected
       codeRef.current = room
       meRef.current = me
       setCode(room)
       setPlayersById({ [me.id]: me })
+      const client = await whenConnected()
+      if (codeRef.current !== room) return
       client.subscribe(`${roomTopic(room)}/players/+`, { qos: 1 })
       publishPlayer(client, room, me)
       setStatus('joined')
@@ -133,18 +135,20 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     [whenConnected],
   )
 
-  const createRoom = useCallback(async () => {
+  // The code is generated on the device so the banker sees it instantly. With
+  // 24^4 (~330k) codes, a clash with a live room isn't worth a round trip.
+  const createRoom = useCallback(() => {
+    const room = randomCode()
     setStatus('connecting')
-    const client = await whenConnected()
-    let room = randomCode()
-    while (await roomExists(room)) room = randomCode()
-    client.publish(metaTopic(room), JSON.stringify({ bankerId: playerId, createdAt: Date.now() }), {
-      retain: true,
-      qos: 1,
-    })
-    await enterRoom(room, { id: playerId, role: 'banker', joinedAt: Date.now(), piece: null, pickedAt: null })
+    enterRoom(room, { id: playerId, role: 'banker', joinedAt: Date.now(), piece: null, pickedAt: null })
+    whenConnected().then((client) =>
+      client.publish(metaTopic(room), JSON.stringify({ bankerId: playerId, createdAt: Date.now() }), {
+        retain: true,
+        qos: 1,
+      }),
+    )
     return room
-  }, [whenConnected, roomExists, enterRoom, playerId])
+  }, [whenConnected, enterRoom, playerId])
 
   const joinRoom = useCallback(
     async (room: string) => {

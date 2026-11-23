@@ -7,33 +7,21 @@ const box =
 
 const Label = () => <p className="text-xs leading-none font-semibold uppercase opacity-50">Room code</p>
 
-// Figma "Input / Code", read-only: the banker shows this to everyone
-export function CodeDisplay({ code }: { code: string | null }) {
+// The banker's code: big letters in brand green for everyone to read off the phone
+export function CodeDisplay({ code }: { code: string }) {
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col gap-3" role="group" aria-label={`Room code ${code}`}>
       <Label />
-      <div className="flex gap-2 py-2">
-        {Array.from({ length: CODE_LENGTH }, (_, i) => (
-          <motion.div
-            key={i}
-            className={box}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + i * 0.07, type: 'spring', stiffness: 300, damping: 22 }}
+      <div className="flex justify-between text-[min(22vw,6rem)] leading-none font-bold text-property-green">
+        {code.split('').map((char, i) => (
+          <motion.span
+            key={`${code}-${i}`}
+            initial={{ opacity: 0, y: 24, scale: 0.6 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.15 + i * 0.08, type: 'spring', stiffness: 320, damping: 16 }}
           >
-            {code ? (
-              <motion.span
-                key={code[i]}
-                initial={{ rotateX: 90, opacity: 0 }}
-                animate={{ rotateX: 0, opacity: 1 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                {code[i]}
-              </motion.span>
-            ) : (
-              <span className="size-3 animate-pulse rounded-full bg-black/15" />
-            )}
-          </motion.div>
+            {char}
+          </motion.span>
         ))}
       </div>
     </div>

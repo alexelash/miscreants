@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { IntroStage } from './IntroStage'
 import { NavChips } from './components/NavChips'
-import { StripeWipe } from './components/StripeWipe'
+import { GreenTakeover } from './components/GreenTakeover'
 import { useRoom } from './game/room'
 import { loadSession, saveSession, type Screen } from './game/session'
 import { BankerRoomScreen } from './screens/BankerRoomScreen'
@@ -102,7 +102,7 @@ function App() {
       )}
 
       {wipeFrom && (
-        <StripeWipe from={wipeFrom} onCovered={() => setScreen('choose-banker')} onDone={() => setWipeFrom(null)} />
+        <GreenTakeover from={wipeFrom} onCovered={() => setScreen('choose-banker')} onDone={() => setWipeFrom(null)} />
       )}
     </main>
   )
