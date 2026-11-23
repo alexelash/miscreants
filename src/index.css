@@ -5,6 +5,9 @@
 @import "preline/variants.css";
 @import "preline/theme.css";
 
+/* Monopoly brand: must come after Preline's theme to override it */
+@import "./brand.css";
+
 /* Mobile-first app shell defaults */
 @layer base {
   html,
@@ -15,6 +18,9 @@
 
   body {
     min-height: 100dvh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;

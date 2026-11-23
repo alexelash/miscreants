@@ -1,0 +1,141 @@
+/*
+ * Monopoly brand tokens, from the Monopoly Kit (Community) Figma file:
+ * https://www.figma.com/design/JxpWVgGI1IS0oQe6XRPxY6/Monopoly-Kit--Community-?node-id=434-18414
+ * ITC Kabel Std is loaded from cdnfonts in index.html.
+ */
+
+/* static: always emit every token, since brand.ts reads them as CSS vars */
+@theme static {
+  /* Typography/Board Font Family: the primary typeface */
+  --font-sans: "ITC Kabel Std", ui-sans-serif, system-ui, sans-serif;
+  --font-board: "ITC Kabel Std", ui-sans-serif, system-ui, sans-serif;
+  /* Typography/Instruction Font Family: secondary, for instructional copy */
+  --font-instruction: "Helvetica Condensed", "Helvetica Neue", "Arial Narrow", Arial, sans-serif;
+
+  /* Colours/Property */
+  --color-property-brown: #955235;
+  --color-property-blue-light: #aae0fa;
+  --color-property-pink: #d93a96;
+  --color-property-orange: #f7941d;
+  --color-property-red: #f11c26;
+  --color-property-red-light: #ff5353;
+  --color-property-yellow: #fef200;
+  --color-property-green: #1fb25a;
+  --color-property-blue-dark: #0072bb;
+
+  /* Colours/General (White, Black, White 40 and Black 20 are Tailwind's
+     white, black, white/40 and black/20) */
+  --color-board: #d9e8d6;
+
+  /* Effects */
+  --shadow-level-1: 0 0 6px 0 #0000000f;
+  --shadow-panel: 0 0.4px 4.8px 0 #0a0a0a1a;
+  --shadow-level-3: 0 0 24px 0 #00000066;
+}
+
+/* Point Preline's semantic tokens at the brand so its components match */
+:root {
+  --background: var(--color-board);
+  --foreground: var(--color-black);
+  --primary: var(--color-property-blue-dark);
+  --primary-foreground: var(--color-white);
+  --primary-hover: color-mix(in oklab, var(--color-property-blue-dark) 85%, black);
+  --primary-focus: var(--primary-hover);
+  --primary-active: var(--primary-hover);
+  --primary-checked: var(--color-property-blue-dark);
+  --destructive: var(--color-property-red);
+}
+
+/*
+ * Figma text styles. Figma letter spacing is in %, so it's converted to em.
+ * Sizes match the kit's print scale (1mm = 2.8px), so the card styles are small.
+ */
+@utility type-board-large {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.375rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+@utility type-board-medium {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.125rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+@utility type-board-small {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 0.9375rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+@utility type-card-large {
+  font-family: var(--font-board);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+  text-transform: uppercase;
+}
+
+@utility type-card-large-bold {
+  font-family: var(--font-board);
+  font-weight: 700;
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+  text-transform: uppercase;
+}
+
+@utility type-card-medium {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 0.5625rem;
+  line-height: 0.6875rem;
+}
+
+@utility type-card-medium-caps {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 0.5625rem;
+  line-height: 0.6875rem;
+  text-transform: uppercase;
+}
+
+@utility type-card-small {
+  font-family: var(--font-board);
+  font-weight: 500;
+  font-size: 0.4375rem;
+  line-height: 0.5rem;
+}
+
+@utility type-card-small-bold {
+  font-family: var(--font-board);
+  font-weight: 600;
+  font-size: 0.4375rem;
+  line-height: 0.5rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+@utility type-instructions-heading {
+  font-family: var(--font-instruction);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.25rem;
+  letter-spacing: -0.01em;
+}
+
+@utility type-instructions-body {
+  font-family: var(--font-instruction);
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+}
