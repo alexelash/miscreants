@@ -26,6 +26,8 @@
   /* Colours/General (White, Black, White 40 and Black 20 are Tailwind's
      white, black, white/40 and black/20) */
   --color-board: #d9e8d6;
+  /* Black (#0F161E): headings and outlines in the app screens */
+  --color-ink: #0f161e;
 
   /* Effects */
   --shadow-level-1: 0 0 6px 0 #0000000f;

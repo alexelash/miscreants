@@ -43,7 +43,8 @@
   }
 }
 
-/* Safe-area padding for notches and home indicators */
+/* Safe-area padding for notches and home indicators. Applied once on <main>:
+   it sets all four paddings, so it would cancel px-* on the same element. */
 @utility safe-area {
   padding-top: env(safe-area-inset-top);
   padding-right: env(safe-area-inset-right);

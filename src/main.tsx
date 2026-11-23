@@ -3,9 +3,12 @@ import { createRoot } from 'react-dom/client'
 import 'preline'
 import './index.css'
 import App from './App.tsx'
+import { RoomProvider } from './game/room'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <RoomProvider>
+      <App />
+    </RoomProvider>
   </StrictMode>,
 )

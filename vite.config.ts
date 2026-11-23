@@ -11,5 +11,5 @@ export default defineConfig({
   server: { host: true },
   preview: { host: true },
   // Full Preline bundle is intentional; bundle size isn't a priority yet
-  build: { chunkSizeWarningLimit: 1000 },
+  build: { chunkSizeWarningLimit: 1500 },
 })

@@ -1,61 +1,109 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useLayoutEffect, useRef, useState } from 'react'
-import { LOGO_HEIGHT_VW, LogoIntro } from './components/LogoIntro'
-import { ShimmerSweep } from './components/Shimmer'
-import { RoomCodeScreen } from './screens/RoomCodeScreen'
-import { WelcomeScreen } from './screens/WelcomeScreen'
+import { useEffect, useState } from 'react'
+import { IntroStage } from './IntroStage'
+import { NavChips } from './components/NavChips'
+import { StripeWipe } from './components/StripeWipe'
+import { useRoom } from './game/room'
+import { loadSession, saveSession, type Screen } from './game/session'
+import { BankerRoomScreen } from './screens/BankerRoomScreen'
+import { BoardSetupScreen } from './screens/BoardSetupScreen'
+import { ChooseBankerScreen } from './screens/ChooseBankerScreen'
+import { ChoosePieceScreen } from './screens/ChoosePieceScreen'
+import { DoneScreen } from './screens/DoneScreen'
+import { JoinRoomScreen } from './screens/JoinRoomScreen'
 
-// Space between the logo and the screen content (Figma: 32px)
-const LOGO_GAP = 32
-// How long the tap shimmer plays before moving to the next screen
-const SHIMMER_MS = 850
-
-type Screen = 'intro' | 'welcome' | 'room'
+// A device that was mid-game picks up where it left off instead of replaying the intro
+const resumed = loadSession()
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('intro')
-  const [shineCount, setShineCount] = useState(0)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const [contentHeight, setContentHeight] = useState(0)
+  const room = useRoom()
+  const [screen, setScreen] = useState<Screen>(resumed?.screen ?? 'intro')
+  const [wipeFrom, setWipeFrom] = useState<DOMRect | null>(null)
 
-  // The logo stays put across screens; slide it up so logo + content sit centred
-  useLayoutEffect(() => {
-    const el = contentRef.current
-    if (!el) return
-    const observer = new ResizeObserver(() => setContentHeight(el.offsetHeight))
-    observer.observe(el)
-    return () => observer.disconnect()
+  useEffect(() => {
+    if (resumed?.roomCode) room.rejoinRoom(resumed.roomCode)
+    // Only on first load
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const logoOffset = contentHeight ? -(LOGO_GAP + contentHeight) / 2 : 0
 
-  const start = () => {
-    setShineCount((n) => n + 1)
-    setTimeout(() => setScreen('room'), SHIMMER_MS)
+  useEffect(() => {
+    saveSession(screen === 'intro' || screen === 'welcome' ? null : { screen, roomCode: room.code })
+  }, [screen, room.code])
+
+  const isBanker = room.me?.role === 'banker'
+  const back: Partial<Record<Screen, Screen>> = {
+    'choose-banker': 'welcome',
+    'banker-room': 'choose-banker',
+    'join-room': 'choose-banker',
+    pieces: isBanker ? 'banker-room' : 'join-room',
+    board: 'pieces',
+    done: 'board',
   }
 
-  return (
-    <main className="relative h-dvh overflow-hidden">
-      <ShimmerSweep count={shineCount} />
-      <LogoIntro offsetY={logoOffset} onDone={() => setScreen('welcome')} />
+  const goHome = () => {
+    room.leaveRoom()
+    setScreen('welcome')
+  }
+  const goBack = () => {
+    const to = back[screen]
+    if (!to) return
+    // Backing out of the room screens leaves the room
+    if (to === 'choose-banker') room.leaveRoom()
+    setScreen(to)
+  }
 
-      <div className="safe-area pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        {/* Holds the logo's place so the content lands just below it */}
-        <div style={{ height: `${LOGO_HEIGHT_VW * 100}vw`, marginBottom: LOGO_GAP }} />
-        <div ref={contentRef} className="pointer-events-auto w-[80vw]">
+  const content = (() => {
+    switch (screen) {
+      case 'choose-banker':
+        return (
+          <ChooseBankerScreen
+            onBanker={() => {
+              room.createRoom()
+              setScreen('banker-room')
+            }}
+            onPlayer={() => setScreen('join-room')}
+          />
+        )
+      case 'banker-room':
+        return <BankerRoomScreen onNext={() => setScreen('pieces')} />
+      case 'join-room':
+        return <JoinRoomScreen onNext={() => setScreen('pieces')} />
+      case 'pieces':
+        return <ChoosePieceScreen onNext={() => setScreen('board')} />
+      case 'board':
+        return <BoardSetupScreen onNext={() => setScreen('done')} />
+      case 'done':
+        return <DoneScreen />
+      default:
+        return null
+    }
+  })()
+
+  return (
+    <main className="safe-area relative h-dvh overflow-hidden">
+      {screen === 'intro' || screen === 'welcome' ? (
+        <IntroStage onStart={setWipeFrom} />
+      ) : (
+        <>
+          <NavChips onHome={goHome} onBack={back[screen] ? goBack : undefined} />
           <AnimatePresence mode="wait">
-            {screen === 'welcome' && (
-              <motion.div key="welcome" exit={{ opacity: 0, transition: { duration: 0.2 } }}>
-                <WelcomeScreen shineCount={shineCount} onStart={start} />
-              </motion.div>
-            )}
-            {screen === 'room' && (
-              <motion.div key="room" exit={{ opacity: 0, transition: { duration: 0.2 } }}>
-                <RoomCodeScreen />
-              </motion.div>
-            )}
+            <motion.div
+              key={screen}
+              className="h-full"
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            >
+              {content}
+            </motion.div>
           </AnimatePresence>
-        </div>
-      </div>
+        </>
+      )}
+
+      {wipeFrom && (
+        <StripeWipe from={wipeFrom} onCovered={() => setScreen('choose-banker')} onDone={() => setWipeFrom(null)} />
+      )}
     </main>
   )
 }

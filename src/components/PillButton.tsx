@@ -1,12 +1,33 @@
 import { motion, type HTMLMotionProps } from 'motion/react'
 
-// Figma "Button": green pill, Kabel Demi 16px caps
-export function PillButton({ className = '', ...props }: HTMLMotionProps<'button'>) {
+const colors = {
+  green: 'bg-property-green',
+  blue: 'bg-property-blue-dark',
+}
+
+// Figma "Button": brand pill, Kabel Demi 16px caps
+export function PillButton({
+  color = 'blue',
+  className = '',
+  ...props
+}: HTMLMotionProps<'button'> & { color?: keyof typeof colors }) {
   return (
     <motion.button
       type="button"
-      whileTap={{ scale: 0.95 }}
-      className={`flex h-[39px] w-[162px] items-center justify-center rounded-full bg-property-green text-base leading-[1.25] font-semibold tracking-[0.1em] text-white uppercase ${className}`}
+      whileTap={{ scale: 0.97 }}
+      className={`flex h-[39px] w-full items-center justify-center rounded-full ${colors[color]} text-base leading-[1.25] font-semibold tracking-[0.1em] text-white uppercase transition-opacity disabled:opacity-40 ${className}`}
+      {...props}
+    />
+  )
+}
+
+// Figma secondary "Button": underlined text link
+export function TextButton({ className = '', ...props }: HTMLMotionProps<'button'>) {
+  return (
+    <motion.button
+      type="button"
+      whileTap={{ scale: 0.97 }}
+      className={`w-full px-6 py-4 text-base leading-[1.25] font-medium text-ink underline underline-offset-2 ${className}`}
       {...props}
     />
   )

@@ -72,35 +72,3 @@ export function ShimmerText({
     </motion.span>
   )
 }
-
-/** Full-bleed band of light that sweeps across whatever is behind it */
-export function ShimmerSweep({ count, duration = 0.9 }: { count: number; duration?: number }) {
-  const position = useMotionValue('100% 0')
-  // On a tall screen the angled band pokes into the corners at rest, so the
-  // overlay only shows while it's sweeping
-  const opacity = useMotionValue(0)
-
-  useEffect(() => {
-    if (!count) return
-    const sweep = animate(position, ['100% 0', '0% 0'], { duration, ease: 'easeInOut' })
-    const fade = animate(opacity, [0, 1, 1, 0], { duration, times: [0, 0.15, 0.8, 1] })
-    return () => {
-      sweep.stop()
-      fade.stop()
-    }
-  }, [count, duration, position, opacity])
-
-  return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none absolute inset-0"
-      style={{
-        backgroundImage: `linear-gradient(${ANGLE}, transparent 38%, color-mix(in oklab, var(--color-property-pink) 35%, transparent) 44%, color-mix(in oklab, var(--color-property-yellow) 55%, transparent) 50%, color-mix(in oklab, var(--color-property-blue-light) 45%, transparent) 55%, transparent 62%)`,
-        backgroundSize: '300% 100%',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: position,
-        opacity,
-      }}
-    />
-  )
-}
