@@ -9,6 +9,9 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  # deploy-pages looks up the uploaded artifact through the Actions API,
+  # which a private repo only allows with this
+  actions: read
 
 concurrency:
   group: pages
