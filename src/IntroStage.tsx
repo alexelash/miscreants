@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { LOGO_HEIGHT_VW, LogoIntro } from './components/LogoIntro'
+import { PropertyCards } from './components/PropertyCards'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 
 // Space between the logo and the content below it (Figma: 32px)
@@ -25,6 +26,7 @@ export function IntroStage({ onStart }: { onStart: (from: DOMRect) => void }) {
 
   return (
     <>
+      <PropertyCards show={introDone} delay={0.2} decks />
       <LogoIntro offsetY={logoOffset} onDone={() => setIntroDone(true)} />
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
         {/* Holds the logo's place so the content lands just below it */}

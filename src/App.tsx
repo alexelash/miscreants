@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { IntroStage } from './IntroStage'
-import { NavChips } from './components/NavChips'
+import { AppHeader } from './components/AppHeader'
 import { GreenTakeover } from './components/GreenTakeover'
 import { useRoom } from './game/room'
 import { loadSession, saveSession, type Screen } from './game/session'
@@ -73,7 +73,7 @@ function App() {
       case 'board':
         return <BoardSetupScreen onNext={() => setScreen('done')} />
       case 'done':
-        return <DoneScreen />
+        return <DoneScreen onHome={goHome} onBack={goBack} />
       default:
         return null
     }
@@ -85,7 +85,8 @@ function App() {
         <IntroStage onStart={setWipeFrom} />
       ) : (
         <>
-          <NavChips onHome={goHome} onBack={back[screen] ? goBack : undefined} />
+          {/* The last screen has its Restart / Back under the text instead */}
+          <AppHeader onHome={goHome} onBack={back[screen] ? goBack : undefined} showLinks={screen !== 'done'} />
           <AnimatePresence mode="wait">
             <motion.div
               key={screen}

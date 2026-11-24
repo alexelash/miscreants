@@ -1,31 +1,43 @@
-import { motion } from 'motion/react'
-import { useRef } from 'react'
-import { CODE_LENGTH } from '../game/room'
+import { motion } from "motion/react";
+import { useRef } from "react";
+import { CODE_LENGTH } from "../game/room";
 
 const box =
-  'flex h-[58px] min-w-0 flex-1 items-center justify-center rounded-[4px] border border-black/20 bg-white text-center text-4xl leading-none font-semibold tracking-[0.1em] uppercase'
+  "flex h-[58px] min-w-0 flex-1 items-center justify-center rounded-[4px] pt-2.5 pl-[0.1em] border border-black/20 bg-white text-center text-4xl leading-none font-semibold tracking-[0.1em] uppercase";
 
-const Label = () => <p className="text-xs leading-none font-semibold uppercase opacity-50">Room code</p>
+const Label = () => (
+  <p className="text-xs leading-none font-semibold uppercase opacity-50">
+    Room code
+  </p>
+);
 
 // The banker's code: big letters in brand green for everyone to read off the phone
 export function CodeDisplay({ code }: { code: string }) {
   return (
-    <div className="flex w-full flex-col gap-3" role="group" aria-label={`Room code ${code}`}>
-      <Label />
-      <div className="flex justify-between text-[min(22vw,6rem)] leading-none font-bold text-property-green">
-        {code.split('').map((char, i) => (
+    <div
+      className="flex w-full flex-col gap-3"
+      role="group"
+      aria-label={`Room code ${code}`}
+    >
+      <div className="flex justify-between text-[min(22vw,6rem)] leading-none font-bold text-property-black">
+        {code.split("").map((char, i) => (
           <motion.span
             key={`${code}-${i}`}
             initial={{ opacity: 0, y: 24, scale: 0.6 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.15 + i * 0.08, type: 'spring', stiffness: 320, damping: 16 }}
+            transition={{
+              delay: 0.15 + i * 0.08,
+              type: "spring",
+              stiffness: 320,
+              damping: 16,
+            }}
           >
             {char}
           </motion.span>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 // Figma "Input / Code", editable: everyone else types the banker's code
@@ -34,25 +46,25 @@ export function CodeInput({
   onChange,
   disabled,
 }: {
-  value: string
-  onChange: (value: string) => void
-  disabled?: boolean
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
 }) {
-  const inputs = useRef<(HTMLInputElement | null)[]>([])
-  const chars = Array.from({ length: CODE_LENGTH }, (_, i) => value[i] ?? '')
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const chars = Array.from({ length: CODE_LENGTH }, (_, i) => value[i] ?? "");
 
   const setChar = (index: number, raw: string) => {
-    const typed = raw.toUpperCase().replace(/[^A-Z]/g, '')
+    const typed = raw.toUpperCase().replace(/[^A-Z]/g, "");
     // Pasting the whole code into one box fills them all
     if (typed.length > 1) {
-      onChange(typed.slice(0, CODE_LENGTH))
-      inputs.current[Math.min(typed.length, CODE_LENGTH) - 1]?.focus()
-      return
+      onChange(typed.slice(0, CODE_LENGTH));
+      inputs.current[Math.min(typed.length, CODE_LENGTH) - 1]?.focus();
+      return;
     }
-    const next = chars.map((c, i) => (i === index ? typed : c)).join('')
-    onChange(next)
-    if (typed && index < CODE_LENGTH - 1) inputs.current[index + 1]?.focus()
-  }
+    const next = chars.map((c, i) => (i === index ? typed : c)).join("");
+    onChange(next);
+    if (typed && index < CODE_LENGTH - 1) inputs.current[index + 1]?.focus();
+  };
 
   return (
     <div className="flex w-full flex-col">
@@ -62,13 +74,14 @@ export function CodeInput({
           <motion.input
             key={i}
             ref={(el) => {
-              inputs.current[i] = el
+              inputs.current[i] = el;
             }}
             value={char}
             disabled={disabled}
             onChange={(e) => setChar(i, e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Backspace' && !char && i > 0) inputs.current[i - 1]?.focus()
+              if (e.key === "Backspace" && !char && i > 0)
+                inputs.current[i - 1]?.focus();
             }}
             aria-label={`Room code letter ${i + 1}`}
             autoCapitalize="characters"
@@ -76,13 +89,18 @@ export function CodeInput({
             autoCorrect="off"
             spellCheck={false}
             inputMode="text"
-            className={`${box} outline-none focus:border-property-blue-dark focus:ring-2 focus:ring-property-blue-dark/30 disabled:opacity-60`}
+            className={`${box} outline-none focus:border-property-blue-dark focus:ring-4 focus:ring-property-blue-dark/30 disabled:opacity-60`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + i * 0.07, type: 'spring', stiffness: 300, damping: 22 }}
+            transition={{
+              delay: 0.2 + i * 0.07,
+              type: "spring",
+              stiffness: 300,
+              damping: 22,
+            }}
           />
         ))}
       </div>
     </div>
-  )
+  );
 }
