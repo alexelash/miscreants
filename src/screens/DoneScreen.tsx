@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import timesOut from "../assets/mr-monopoly-times-out.svg";
 import { Glow } from "../components/Glow";
-import { NavChips } from "../components/NavChips";
+import { PillButton, TextButton } from "../components/PillButton";
 import { PropertyCards } from "../components/PropertyCards";
 import { ScreenHeading } from "../components/ScreenLayout";
 
@@ -22,7 +22,12 @@ export function DoneScreen({
           className="w-[min(30vw,320px)]"
           initial={{ opacity: 0, y: 60, rotate: -8 }}
           animate={{ opacity: 1, y: 0, rotate: 0 }}
-          transition={{ delay: 0.3, type: "spring", stiffness: 180, damping: 14 }}
+          transition={{
+            delay: 0.3,
+            type: "spring",
+            stiffness: 180,
+            damping: 14,
+          }}
         />
       </Glow>
       <ScreenHeading
@@ -31,15 +36,22 @@ export function DoneScreen({
       >
         <p>
           This is as far as I got, unfortunately! I hope you enjoyed this little
-          POC.
+          proof of concept.
         </p>
       </ScreenHeading>
       <motion.div
+        className="flex w-full flex-col items-center"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, type: "spring", stiffness: 300, damping: 26 }}
       >
-        <NavChips inline onHome={onHome} onBack={onBack} />
+        <PillButton
+          color="red"
+          onClick={onHome}
+        >
+          Restart
+        </PillButton>
+        <TextButton onClick={onBack}>Back a step</TextButton>
       </motion.div>
     </div>
   );

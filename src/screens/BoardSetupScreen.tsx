@@ -10,6 +10,10 @@ import communityChest from "../assets/community-chest.svg";
 import board from "../assets/monopoly-game-board.svg";
 import { PillButton, TextButton } from "../components/PillButton";
 import { ScreenHeading } from "../components/ScreenLayout";
+import { Stepper } from "../components/Stepper";
+
+// The setup wizard; this screen is its first step
+const SETUP_STEPS = ["Board", "Cash", "Bank"];
 
 // The dashed card slots on monopoly-game-board.svg, as fractions of the board
 // size. Both sit on the -45° diagonal, like the MONOPOLY banner.
@@ -87,6 +91,10 @@ export function BoardSetupScreen({ onNext }: { onNext: () => void }) {
 
   return (
     <div className="flex h-full flex-col gap-6 px-6 pt-[84px] pb-6">
+      <Stepper
+        steps={SETUP_STEPS}
+        current={0}
+      />
       <motion.div {...appear(0.35)}>
         <ScreenHeading
           title="Set up the board"
@@ -139,12 +147,12 @@ export function BoardSetupScreen({ onNext }: { onNext: () => void }) {
         className="flex flex-col"
         {...appear(0.55)}
       >
-        <PillButton onClick={onNext}>Next: Starting money</PillButton>
+        <PillButton onClick={onNext}>Next step: cash</PillButton>
         <TextButton
           className="no-underline"
           onClick={onNext}
         >
-          Skip, it’s set up already
+          Skip board set-up, we did this already
         </TextButton>
       </motion.div>
     </div>

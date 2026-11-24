@@ -80,7 +80,7 @@ export function PlayerGroup({ players }: { players: Player[] }) {
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {players.length} {players.length === 1 ? "player" : "players"} joined
+          {players.length} {players.length === 1 ? "player" : "players joined"}
         </motion.p>
       </div>
     </div>

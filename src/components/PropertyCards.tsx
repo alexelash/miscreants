@@ -19,12 +19,12 @@ const CARDS = [
   { src: waterWorks, x: 0.87, y: 0.9, rotate: -13 },
 ]
 
-// Chance and Community Chest (landscape cards), stood on end and peeking in
-// from either side of the middle
-const DECKS = [
-  { src: communityChest, x: 0.02, y: 0.34, rotate: 78 },
-  { src: chanceCard, x: 0.98, y: 0.66, rotate: -78 },
-]
+// Chance and Community Chest (landscape cards) can take over the middle
+// slots at the top and bottom, in place of Station 1 and Electric Company
+const DECKS: Record<number, { src: string; x: number; y: number; rotate: number }> = {
+  1: { src: communityChest, x: 0.5, y: 0.05, rotate: 5 },
+  4: { src: chanceCard, x: 0.52, y: 0.96, rotate: -5 },
+}
 
 /**
  * Title deed cards that slide in from off-screen towards the middle and
@@ -37,15 +37,16 @@ export function PropertyCards({
 }: {
   show?: boolean
   delay?: number
-  /** Also bring in the Chance and Community Chest cards */
+  /** Swap in the Chance and Community Chest cards for two of the deeds */
   decks?: boolean
 }) {
   const reduceMotion = useReducedMotion()
   if (!show) return null
-  const cards = [
-    ...CARDS.map((card) => ({ ...card, width: 'w-[min(30vw,140px)]' })),
-    ...(decks ? DECKS.map((card) => ({ ...card, width: 'w-[min(36vw,170px)]' })) : []),
-  ]
+  const cards = CARDS.map((card, i) =>
+    decks && DECKS[i]
+      ? { ...DECKS[i], width: 'w-[min(38vw,180px)]' }
+      : { ...card, width: 'w-[min(30vw,140px)]' },
+  )
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
       {cards.map((card, i) => {

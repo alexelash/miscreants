@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 const colors = {
   green: 'bg-property-green',
   blue: 'bg-property-blue-dark',
+  red: 'bg-property-red',
 }
 
 // Figma "Button": brand pill, Kabel Demi 16px caps
