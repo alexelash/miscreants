@@ -9,20 +9,17 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  # deploy-pages looks up the uploaded artifact through the Actions API,
-  # which a private repo only allows with this
-  actions: read
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  # Upload and deploy run as separate jobs: in a single job deploy-pages can
+  # list artifacts before the upload is visible and fail with "No artifacts
+  # named github-pages" (actions/deploy-pages#451)
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -35,5 +32,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
